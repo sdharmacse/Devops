@@ -1,0 +1,94 @@
+
+1. What is Puppet?
+2. Why do we use Puppet?
+3. How Puppet works?
+4. Understanding the Puppet Architectures and puppet components.
+5. How the puppet connections are getting established between puppet master and puppet agent nodes?
+
+Also watch this demo practically on Youtube!
+
+
+1. What is Puppet?
+Puppet is a configuration management tool available as an open-source and Enterprise versions. It runs on many Unix-like systems as well as on Microsoft Windows.
+
+Puppet is produced by Puppet Labs, founded by Luke Kanies in 2005. It is written in Ruby and released as free software under the GNU General Public License (GPL) until version 2.7.0 and the Apache License 2.0 after that.
+
+Puppet is designed to manage the configuration of Unix-like and Microsoft Windows systems declaratively. The user describes system resources and their state, either using Puppet's declarative language or a Ruby DSL (domain-specific language).
+
+2. Why do we use Puppet?
+We use Puppet, because puppet is a configuration management tool which is more powerful that helps system administrators to automate the provisioning, configuration, and management of a server infrastructure. Puppet enables system administrators and Dev Ops to work faster and smarter.
+
+3. How Puppet works?
+This information is stored in files called "Puppet manifests". Puppet discovers the system information via a utility called Facter, and compiles the Puppet manifests into a system-specific catalog containing resources and resource dependency, which are applied against the target systems. Any actions taken by Puppet are then reported.
+
+4. Understanding the Puppet Architecture and Puppet components.
+
+Puppet master
+Puppet master is a service runs on the main server which used to manage the entire clients to deploy, configure and maintains the infrastructures.
+
+Puppet agent
+Puppet agent is a service which runs on the client which sends the request the catalog to the puppet master and applies it by checking each resource the catalog describes. If it finds any resources that are not in their desired state, it makes any changes necessary to correct them. After applying the catalog, the agent submits a report to the Puppet master.
+
+Catalog
+A catalog is a document that describes the desired system state for one specific server. It lists all of the resources that need to be managed, as well as any dependencies between those resources.
+
+Manifests
+Manifests are files with extension ".pp", where we declare all resources to be checked or to be changed. Resources may be files, packages, services and so on.
+
+Resources types
+Resource Types are,
+a. A type (package, service, file, user, mount, exec)
+b. A title (how the resources types are called and referred)
+
+Sample syntax:
+
+type { 'title':
+  argument  => value,
+  other_arg => value,
+}
+Simple samples of resources
+
+Verify the OpenSSH package
+
+package { 'openssh':
+  ensure => present,
+}
+Create a /etc/motd file
+
+file { 'motd':
+  path => '/etc/motd',
+}
+Start a httpd service
+
+service { 'httpd':
+  ensure => running,
+  enable => true,
+}
+If you are looking for Resource Types reference, use the below command.
+
+puppet describe file
+For the full list of available descriptions:
+
+puppet describe --list
+Classes
+Classes are containers or groups of different resources.
+
+Example of a class definition:
+
+class mysql (
+  root_password => 'default_value',
+  port          => '3306',
+) {
+  package { 'mysql-server':
+    ensure => present,
+  }
+  service { 'mysql':
+    ensure    => running,
+  }
+  [...]
+}
+Note that when we define a class we just describe what it does and what parameters it has, we don't actually add it and its resources to the catalog.
+
+5. How the puppet connections are getting established between puppet master and puppet agent nodes?
+Puppet agent nodes and Puppet masters communicate via HTTPS with client-verification. The Puppet master provides an HTTP interface, with various endpoints available. When requesting or submitting anything to the master, the agent makes an HTTPS request to one of those endpoints.
+ 
